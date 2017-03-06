@@ -1,0 +1,29 @@
+{
+  "name": "knexpractice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "knex": "knex",
+    "test": "tape test/**/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naeri-kailash/knexpractice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naeri-kailash/knexpractice/issues"
+  },
+  "homepage": "https://github.com/naeri-kailash/knexpractice#readme",
+  "dependencies": {
+    "knex": "^0.12.7",
+    "sqlite3": "^3.1.8"
+  },
+  "devDependencies": {
+    "tap-diff": "^0.1.1",
+    "tape": "^4.6.3"
+  }
+}

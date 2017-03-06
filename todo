@@ -1,0 +1,113 @@
+#! /usr/bin/env node
+
+var config = require('./knexfile').development
+var db = require('knex')(config)
+
+var cmd = process.argv[2]
+var note = process.argv[3]
+var specify = process.argv[4]
+
+switch (cmd) {
+  case 'add':
+    addTodo(note)
+      .then(getAll)
+      .then(listTodos)
+      .catch(logError)
+      .finally(closeDB)
+    break
+
+  case 'list':
+    getAll()
+      .then(listTodos)
+      .catch(logError)
+      .finally(closeDB)
+    break
+
+  case 'done':
+    completeTask(note)
+      .then(getAll)
+      .then(listTodos)
+      .catch(logError)
+      .finally(closeDB)
+    break
+
+  case 'update':
+    updateTask(note, specify)
+      .then(getAll)
+      .then(listTodos)
+      .catch(logError)
+      .finally(closeDB)
+    break
+
+    case 'search':
+      searchTasks(note)
+        .then(listResult)
+        .catch(logError)
+        .finally(closeDB)
+      break
+
+    case 'status':
+      updateStatus(note, specify)
+        .then(getAll)
+        .then(listTodos)
+        .catch(logError)
+        .finally(closeDB)
+      break
+
+  default:
+    console.log('No matched cases')
+    closeDB()
+    break
+}
+
+function listTodos (todos) {
+  todos.forEach(function (todo) {
+    console.info(todo.id + ': ' + todo.tasks + ' ' + todo.completed)
+  })
+}
+
+function listResult (result) {
+  console.log(result[0].id + ': ' + result[0].tasks)
+}
+
+function logError (err) {
+  console.error('Uh oh!', err)
+}
+
+function getAll () {
+  return db('todos').select()
+}
+
+function completeTask(id) {
+  return db('todos')
+  .where('id', id)
+  .del()
+}
+
+function updateTask(id, specify) {
+  return db('todos')
+  .where('id', id)
+  .update('tasks', specify)
+}
+
+function searchTasks(keyword) {
+  return db('todos')
+  .where('tasks', 'like', '%' + keyword + '%')
+}
+
+function addTodo (task) {
+  return db('todos')
+    .insert({
+      task: task
+    })
+}
+
+function updateStatus (id, status) {
+  return db('todos')
+  .where('id', id)
+  .update('completed', status)
+}
+
+function closeDB () {
+  db.destroy()
+}
